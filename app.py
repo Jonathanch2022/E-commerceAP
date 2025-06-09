@@ -1,3 +1,4 @@
+from os import name
 import time
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
@@ -35,7 +36,7 @@ class Order(db.Model):
    id: Mapped[int] = mapped_column(primary_key=True,autoincrement=True)
    order_date: Mapped[DateTime] = mapped_column(DateTime,server_default=func.now())
    user_id: Mapped[int] = mapped_column(ForeignKey('user.id'), nullable= False)
-   user = relationship("user", back_populates="order", cascade="all, delete-orphan")
+   user = relationship("User", back_populates="order", cascade="all, delete-orphan")
  
 class Product(db.Model):
    __tablename__ = "product"
@@ -51,10 +52,42 @@ class Order_ProductAssociation(db.Model):
 with app.app_context():
    db.create_all()
  
-   
+class UserShema(ma.SQLAlchemyAutoSchema):
+  class Meta:
+     model = User
+     load_instance = True
+     
+id = ma.auto_field()
+name = ma.auto_field()
+address = ma.auto_field()
+email = ma.auto_field()
+    
+class ProductScheme(ma.SQLAlchemyAutoSchema):
+   class Meta:
+      model = Product
+      load_instance = True
+      
+id = ma.auto_field()
+product_name = ma.auto_field()
+price = ma.auto_field()
+
+class OrderSchema(ma.SQLAlchemyAutoSchema):
+   class Meta:
+      model = Order
+      load_instance = True
+      include_fk = True
+      
+id = ma.auto_field()
+order_date = ma.auto_field()
+user_id = ma.auto_field()
+
+      
+
 @app.route('/')
 def hello():
-    return(f"Database connected {db.engine.name}")
+    users = User.query.all()
+    return (UserShema(many=True).dump(users))
+    
 
 @app.route('/home')
 def home():
