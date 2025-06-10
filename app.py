@@ -1,3 +1,5 @@
+
+from crypt import methods
 from os import name
 import time
 from flask import Flask
@@ -36,7 +38,7 @@ class Order(db.Model):
    id: Mapped[int] = mapped_column(primary_key=True,autoincrement=True)
    order_date: Mapped[DateTime] = mapped_column(DateTime,server_default=func.now())
    user_id: Mapped[int] = mapped_column(ForeignKey('user.id'), nullable= False)
-   user = relationship("User", back_populates="order", cascade="all, delete-orphan")
+   user = relationship("User", back_populates="orders")
  
 class Product(db.Model):
    __tablename__ = "product"
@@ -52,24 +54,24 @@ class Order_ProductAssociation(db.Model):
 with app.app_context():
    db.create_all()
  
-class UserShema(ma.SQLAlchemyAutoSchema):
+class UserSchema(ma.SQLAlchemyAutoSchema):
   class Meta:
      model = User
      load_instance = True
      
-id = ma.auto_field()
-name = ma.auto_field()
-address = ma.auto_field()
-email = ma.auto_field()
+  id = ma.auto_field()
+  name = ma.auto_field()
+  address = ma.auto_field()
+  email = ma.auto_field()
     
 class ProductScheme(ma.SQLAlchemyAutoSchema):
    class Meta:
       model = Product
       load_instance = True
       
-id = ma.auto_field()
-product_name = ma.auto_field()
-price = ma.auto_field()
+   id = ma.auto_field()
+   product_name = ma.auto_field()
+   price = ma.auto_field()
 
 class OrderSchema(ma.SQLAlchemyAutoSchema):
    class Meta:
@@ -77,19 +79,23 @@ class OrderSchema(ma.SQLAlchemyAutoSchema):
       load_instance = True
       include_fk = True
       
-id = ma.auto_field()
-order_date = ma.auto_field()
-user_id = ma.auto_field()
+   id = ma.auto_field()
+   order_date = ma.auto_field()
+   user_id = ma.auto_field()
 
       
 
-@app.route('/')
-def hello():
+@app.route('/users',methods=["GET"])
+def users():
     users = User.query.all()
-    return (UserShema(many=True).dump(users))
+    return (UserSchema(many=True).dump(users))
     
 
-@app.route('/home')
+@app.route('/users/<int:id>',methods=["GET"])
+  def user_detail(id):
+       user = user.query.get(id)
+       return(UserSchema(many=False).dump(user))
+
 def home():
     return("This is the home route")
 
