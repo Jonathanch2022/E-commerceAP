@@ -5,11 +5,6 @@ VisualStudioVersion = 17.8.34322.80
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{888888A0-9F3D-457C-B088-3A5042F75D52}") = "E-commerceAP", "E-commerceAP.pyproj", "{AC37F951-A762-445A-B2BC-16840220468B}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "modules", "modules", "{54955E0B-5836-4E1C-AD43-FACEBB0C9B8A}"
-	ProjectSection(SolutionItems) = preProject
-		create_database.py = create_database.py
-	EndProjectSection
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
