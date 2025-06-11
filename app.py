@@ -200,25 +200,29 @@ def delete_product(id):
        return(e)
    
 #Table ordrs routes
-#return all order for use with user_id
+#return all orders for user with user_id
 @app.route('/orders/user/<int:user_id>',methods=["GET"])
 def orders(user_id):
     orders = Order.query.filter_by(user_id=user_id).all()
-    return (UserSchema(many=True).dump(orders))
+    return (OrderSchema(many=True).dump(orders))
 
 
-#eturn all products for order    
+#return all products for order    
 @app.route('/orders/<int:id>/products',methods=["GET"])
 def product_order_details(id):
   try:
-    if(id >= 0):
-        order = Order.query.get(id)
-        
+    
+    order = Order.query.get(id)
+    if(order):    
         if order:
            orders = Order_ProductAssociation.query.filter_by(order_id=id).all()
-        return(ProductAssociationSchema(many=True).dump(orders))
+           prd_list = []
+           for t in orders:
+             pr = Product.query.get(t.product_id)
+             prd_list.append(ProductScheme(many=False).dump(pr))   
+           return(jsonify(prd_list))       
     else:
-        return(jsonify("No orders for product found"))
+        return(jsonify("Order not found"))
   except ValidationError as e:
      return(jsonify(e))
 
