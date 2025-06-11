@@ -18,8 +18,12 @@ class Base(DeclarativeBase):
 #create flask app instance
 app = Flask(__name__)
 
+userName = "root"
+password = "MYSQL_PASSWORD_HERE"
+database = "ecommerce_api"
+host = "localhost"
 #configure the MySQL database URI
-app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://root:Mdnk9966200723%40@localhost/ecommerce_api'
+app.config['SQLALCHEMY_DATABASE_URI'] = f'mysql+pymysql://{userName}:{password}@{host}/{database}'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 db= SQLAlchemy(model_class=Base)
